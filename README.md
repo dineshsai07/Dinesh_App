@@ -10,7 +10,6 @@ D.I.N.E.S.H is a personal neural engine that runs entirely on your Mac. It liste
 |---|---|
 | **Product** | D.I.N.E.S.H (Device-Integrated Neural Engine for System Handling) |
 | **Author** | Dinesh Sai |
-| **Built with** | [Cursor](https://cursor.com) and modern AI-assisted development |
 | **Runtime** | macOS · Apple Silicon · Python · Ollama |
 | **License** | MIT |
 
@@ -20,7 +19,7 @@ D.I.N.E.S.H is a personal neural engine that runs entirely on your Mac. It liste
 
 Most assistants answer questions in a browser tab. D.I.N.E.S.H is designed as a **system-handling engine**: neural models provide perception and reasoning; a tool runtime turns that into concrete actions on the device.
 
-It was conceived, designed, and implemented as a **Cursor-native engineering project**—iterating from a local assistant prototype into a packaged product with:
+It was conceived, designed, and implemented as a personal engineering project—iterating from a local assistant prototype into a packaged product with:
 
 - A cinematic **HUD** (heads-up display) for live control and telemetry  
 - A **CLI** for terminal workflows  
@@ -46,8 +45,6 @@ D.I.N.E.S.H began as a personal initiative by **Dinesh Sai** to build a capable 
 5. Be **shareable**: cloneable, installable, and usable on other Macs  
 
 ### 2.2 Development method
-
-The product was developed primarily inside **Cursor**, using AI pair-programming as an engineering accelerator—architecture drafts, implementation, debugging, UI iteration, test coverage, and packaging—while product decisions, naming, and acceptance criteria remained human-directed.
 
 The build path roughly followed:
 
@@ -312,7 +309,7 @@ Near-term product priorities (detail in [`ROADMAP.md`](ROADMAP.md)):
 
 ## 14. Attribution
 
-D.I.N.E.S.H was created by **Dinesh Sai**, engineered with **Cursor** and AI-assisted development, and released under the **MIT License** for study, use, and extension.
+D.I.N.E.S.H was created by **Dinesh Sai** and released under the **MIT License** for study, use, and extension.
 
 > Built to demonstrate that a serious local assistant—perception, reasoning, memory, and system control—can be designed and shipped as a coherent product, not only as a chat demo.
 

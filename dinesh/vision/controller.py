@@ -60,7 +60,7 @@ def camera_permission_ok() -> tuple[bool, str]:
     if not cap.isOpened():
         return False, (
             "Camera blocked. System Settings → Privacy & Security → Camera → "
-            "enable Terminal (or Cursor), then restart Dinesh."
+            "enable Terminal (or the app that launches Dinesh), then restart Dinesh."
         )
     ok, _ = cap.read()
     cap.release()

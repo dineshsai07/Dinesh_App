@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Dinesh v3 — Autonomous Mac Intelligence
-Built with Cursor · Optimized for Apple M4
+Optimized for Apple M4
 """
 
 import sys

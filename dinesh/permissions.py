@@ -75,28 +75,28 @@ def permission_report(probe_camera: bool = False) -> dict[str, Any]:
             "label": "Microphone",
             "ok": mic_ok,
             "detail": mic_msg,
-            "fix": "System Settings → Privacy & Security → Microphone → enable Terminal / Cursor",
+            "fix": "System Settings → Privacy & Security → Microphone → enable Terminal (or the app that launches Dinesh)",
         },
         {
             "id": "camera",
             "label": "Camera",
             "ok": cam_ok,
             "detail": cam_msg,
-            "fix": "System Settings → Privacy & Security → Camera → enable Terminal / Cursor",
+            "fix": "System Settings → Privacy & Security → Camera → enable Terminal (or the app that launches Dinesh)",
         },
         {
             "id": "accessibility",
             "label": "Accessibility",
             "ok": acc_ok,
             "detail": "GUI control ready" if acc_ok else "Needed for mouse/keyboard control",
-            "fix": "System Settings → Privacy & Security → Accessibility → enable Terminal / Cursor",
+            "fix": "System Settings → Privacy & Security → Accessibility → enable Terminal (or the app that launches Dinesh)",
         },
         {
             "id": "screen",
             "label": "Screen Recording",
             "ok": scr_ok,
             "detail": scr_msg,
-            "fix": "System Settings → Privacy & Security → Screen Recording → enable Terminal / Cursor",
+            "fix": "System Settings → Privacy & Security → Screen Recording → enable Terminal (or the app that launches Dinesh)",
         },
     ]
     return {
