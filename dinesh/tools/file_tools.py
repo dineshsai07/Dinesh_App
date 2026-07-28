@@ -2,9 +2,16 @@
 
 import os
 import shutil
+import time
 from pathlib import Path
+from threading import Lock
 
 from config import FULL_CONTROL
+
+_CONFIRM_TTL_SECS = 120
+_pending_lock = Lock()
+_pending_delete = ""
+_pending_until = 0.0
 
 
 def create_file(path: str, content: str = "") -> str:
@@ -101,9 +108,36 @@ def copy_file(source: str, destination: str) -> str:
 
 
 def delete_path(path: str) -> str:
+    global _pending_delete, _pending_until
     if not FULL_CONTROL:
         return "Delete blocked. Set DINESH_FULL_CONTROL=1 to enable destructive file operations."
     full = os.path.expanduser(path)
+    confirm_prefix = "confirm:"
+    if full.lower().startswith(confirm_prefix):
+        candidate = os.path.expanduser(full[len(confirm_prefix):].strip())
+        with _pending_lock:
+            if (
+                _pending_delete
+                and time.time() <= _pending_until
+                and candidate == _pending_delete
+            ):
+                full = candidate
+                _pending_delete = ""
+                _pending_until = 0.0
+            else:
+                return (
+                    "No matching pending delete request. "
+                    "Call delete_path once, then confirm with: confirm:/exact/path"
+                )
+    else:
+        with _pending_lock:
+            _pending_delete = full
+            _pending_until = time.time() + _CONFIRM_TTL_SECS
+        return (
+            "Confirmation required for delete. "
+            "Call delete_path again with: confirm:"
+            f"{full}"
+        )
     try:
         if os.path.isdir(full):
             shutil.rmtree(full)

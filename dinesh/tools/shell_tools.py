@@ -3,9 +3,26 @@
 import os
 import shutil
 import subprocess
+import time
 from datetime import datetime
+from threading import Lock
 
 from config import FULL_CONTROL, SHELL_TIMEOUT
+
+_RISKY_PREFIXES = (
+    "rm ", "rmdir ", "mv ", "cp ", "chmod ", "chown ", "kill ", "pkill ",
+    "reboot", "shutdown", "halt", "poweroff", "launchctl ", "diskutil ",
+    "sudo ", "python ", "python3 ", "bash ", "sh ", "zsh ",
+)
+_SAFE_PREFIXES = (
+    "ls", "pwd", "whoami", "date", "uptime", "ps", "top", "echo", "cat",
+    "head", "tail", "wc", "du", "df", "stat", "which", "python -V", "python3 -V",
+    "pip -V", "ollama list", "git status", "git log", "git branch",
+)
+_CONFIRM_TTL_SECS = 120
+_pending_lock = Lock()
+_pending_command = ""
+_pending_until = 0.0
 
 
 def get_storage() -> str:
@@ -82,6 +99,7 @@ def get_resource_summary() -> str:
 
 def run_command(command: str, cwd: str = "") -> str:
     """Run a shell command. Destructive ops blocked unless FULL_CONTROL."""
+    global _pending_command, _pending_until
     blocked = [
         "rm -rf /", "rm -rf ~", "mkfs", "dd if=", ":(){:|:&};:",
         "format", "> /dev/sda", "chmod -R 777 /",
@@ -95,6 +113,44 @@ def run_command(command: str, cwd: str = "") -> str:
     for b in blocked:
         if b in cmd_lower:
             return f"Blocked command containing '{b.strip()}'."
+
+    command = command.strip()
+    if not command:
+        return "No command provided."
+
+    # In full-control mode, require explicit second-step confirmation for risky
+    # commands that are not in the read-only safe list.
+    if FULL_CONTROL:
+        safe = any(cmd_lower.startswith(prefix) for prefix in _SAFE_PREFIXES)
+        risky = any(cmd_lower.startswith(prefix) for prefix in _RISKY_PREFIXES) or "&&" in cmd_lower
+        if risky and not safe:
+            if cmd_lower.startswith("confirm "):
+                confirmed = command[8:].strip()
+                with _pending_lock:
+                    if (
+                        _pending_command
+                        and time.time() <= _pending_until
+                        and confirmed == _pending_command
+                    ):
+                        command = confirmed
+                        cmd_lower = command.lower()
+                        _pending_command = ""
+                        _pending_until = 0.0
+                    else:
+                        return (
+                            "No matching pending command to confirm. "
+                            "Run the command once, then repeat as: confirm <exact command>"
+                        )
+            else:
+                with _pending_lock:
+                    _pending_command = command
+                    _pending_until = time.time() + _CONFIRM_TTL_SECS
+                return (
+                    "Confirmation required for risky shell command. "
+                    "Repeat exactly as: confirm "
+                    f"{command}"
+                )
+
     work_dir = os.path.expanduser(cwd) if cwd else None
     try:
         result = subprocess.run(

@@ -184,6 +184,7 @@ Alternatively, double-click **`start_dinesh.command`**.
 | `python3 main.py hud` | Run HUD in the foreground (debugging) |
 | `python3 main.py cli` | Terminal assistant |
 | `python3 main.py status` | Health and install path |
+| `python3 main.py benchmark` | Measure cold vs warm first-response latency |
 
 ### 6.4 Permissions (one-time)
 
@@ -221,7 +222,29 @@ Typing noise is expected. Examples that should still work: `opne chorme`, `wat i
 
 ---
 
-## 8. Why this qualifies as a “neural engine”
+## 8. Quick demo (60 seconds)
+
+A 60-second walkthrough helps new users understand setup, wake flow, and real actions quickly.
+
+- Place your demo at `docs/demo-60s.gif` or `docs/demo-60s.mp4`
+- Keep it focused: setup check, wake/listen, one tool action, one memory action, stop
+- Recommended sequence:
+  1. `python3 main.py status`
+  2. Start HUD and click **Wake**
+  3. Say: "open safari"
+  4. Say: "remember my name is Dinesh"
+  5. Say: "memory"
+  6. End on `python3 main.py stop`
+
+Once recorded, embed it here:
+
+```md
+![D.I.N.E.S.H 60-second demo](docs/demo-60s.gif)
+```
+
+---
+
+## 9. Why this qualifies as a “neural engine”
 
 | Term | Justification in this product |
 |---|---|
@@ -233,7 +256,7 @@ Honest positioning: D.I.N.E.S.H does **not** claim a custom silicon neural proce
 
 ---
 
-## 9. Privacy, safety, and portability
+## 10. Privacy, safety, and portability
 
 ### Privacy
 
@@ -255,7 +278,7 @@ Honest positioning: D.I.N.E.S.H does **not** claim a custom silicon neural proce
 
 ---
 
-## 10. Technology stack
+## 11. Technology stack
 
 | Layer | Choices |
 |---|---|
@@ -271,7 +294,7 @@ Honest positioning: D.I.N.E.S.H does **not** claim a custom silicon neural proce
 
 ---
 
-## 11. Testing
+## 12. Testing
 
 ```bash
 python3 main.py setup          # once
@@ -279,11 +302,11 @@ source .venv/bin/activate
 cd dinesh && python -m pytest tests/ -q
 ```
 
-Current automated coverage focuses on **NLU / intent routing** and **gesture / gaze classifiers** (camera-free unit tests).
+Current automated coverage includes **NLU/intent**, **vision classifiers**, and critical runtime helpers in **audio**, **server**, **memory store**, and **tool safety confirmations**.
 
 ---
 
-## 12. Configuration (selected)
+## 13. Configuration (selected)
 
 | Variable | Effect |
 |---|---|
@@ -296,7 +319,43 @@ Current automated coverage focuses on **NLU / intent routing** and **gesture / g
 
 ---
 
-## 13. Roadmap
+## 14. Known limitations
+
+- macOS-first implementation; Linux/Windows are not officially supported.
+- Voice quality/latency depends on local resources and optional `edge-tts` availability.
+- Some GUI automation flows can fail on unusual window layouts or app-specific shortcuts.
+- Vision gestures depend on camera quality, lighting, and permission state.
+- First-ever model responses can still be slower on low-memory machines even with warmup.
+
+## 15. Troubleshooting
+
+### HUD does not open
+
+- Run `python3 main.py status`
+- If down, run `python3 main.py start`
+- Check logs at `/tmp/dinesh_hud.log`
+
+### Mic or camera not working
+
+- Open System Settings -> Privacy & Security
+- Enable Microphone/Camera for Terminal (or the launcher app)
+- Restart D.I.N.E.S.H after changing permissions
+
+### "Blocked" risky actions
+
+- SAFE mode blocks destructive actions by default
+- For advanced control: set `DINESH_FULL_CONTROL=1`
+- Risky shell/delete operations now require an explicit confirmation step
+
+### Slow first response
+
+- Run once: `python3 main.py setup`
+- Keep Ollama running (`ollama serve`)
+- Prefer `qwen2.5:7b` on >=16 GB RAM machines
+
+---
+
+## 16. Roadmap
 
 Near-term product priorities (detail in [`ROADMAP.md`](ROADMAP.md)):
 
@@ -307,7 +366,19 @@ Near-term product priorities (detail in [`ROADMAP.md`](ROADMAP.md)):
 
 ---
 
-## 14. Attribution
+## 17. Release process
+
+- Keep release notes in [`CHANGELOG.md`](CHANGELOG.md)
+- Create a release tag:
+
+```bash
+git tag -a v1.0.0 -m "D.I.N.E.S.H v1.0.0"
+git push origin v1.0.0
+```
+
+---
+
+## 18. Attribution
 
 D.I.N.E.S.H was created by **Dinesh Sai** and released under the **MIT License** for study, use, and extension.
 
@@ -315,7 +386,7 @@ D.I.N.E.S.H was created by **Dinesh Sai** and released under the **MIT License**
 
 ---
 
-## 15. License
+## 19. License
 
 Copyright © 2026 Dinesh Sai  
 

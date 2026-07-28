@@ -93,6 +93,24 @@ def preload_whisper_background():
     threading.Thread(target=_worker, daemon=True).start()
 
 
+def warm_audio_pipeline_background():
+    """
+    Best-effort warmup so first speak/listen interactions feel instant:
+    - cache edge-tts availability
+    - resolve preferred voice label
+    - begin Whisper preload
+    """
+    def _worker():
+        try:
+            _has_edge_tts()
+            pick_voice()
+            preload_whisper_background()
+        except Exception:
+            pass
+
+    threading.Thread(target=_worker, daemon=True, name="dinesh-audio-warm").start()
+
+
 def get_whisper_model():
     return _load_whisper_sync()
 

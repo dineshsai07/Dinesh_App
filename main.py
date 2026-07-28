@@ -17,6 +17,7 @@ to a specific user's home directory. Safe to clone onto any Mac.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import platform
 import shutil
@@ -368,6 +369,31 @@ def hud_is_up() -> bool:
         return False
 
 
+def measure_first_response_latency(model: str = "qwen2.5:7b") -> dict[str, float]:
+    """Measure first local generation latency from Ollama."""
+    url = "http://127.0.0.1:11434/api/generate"
+    payload = json.dumps(
+        {"model": model, "prompt": "Reply with exactly: ok", "stream": False}
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    t0 = time.perf_counter()
+    with urllib.request.urlopen(req, timeout=45) as r:
+        body = json.loads(r.read().decode("utf-8"))
+    elapsed_ms = round((time.perf_counter() - t0) * 1000, 1)
+    eval_ms = round(float(body.get("eval_duration", 0)) / 1_000_000, 1)
+    load_ms = round(float(body.get("load_duration", 0)) / 1_000_000, 1)
+    return {
+        "total_ms": elapsed_ms,
+        "load_ms": load_ms,
+        "eval_ms": eval_ms,
+    }
+
+
 # ── commands ───────────────────────────────────────────────────
 
 def cmd_setup(_: argparse.Namespace) -> None:
@@ -486,6 +512,22 @@ def cmd_status(_: argparse.Namespace) -> None:
         info(f"Plist targets this install: {'yes' if str(PKG) in text else 'NO — run start again'}")
 
 
+def cmd_benchmark(_: argparse.Namespace) -> None:
+    banner("D.I.N.E.S.H  ·  Performance benchmark")
+    ensure_ollama()
+    model = os.environ.get("DINESH_MODEL", "qwen2.5:7b")
+    try:
+        cold = measure_first_response_latency(model)
+        warm = measure_first_response_latency(model)
+    except Exception as e:
+        die(f"Benchmark failed: {e}")
+    info(f"Model: {model}")
+    info(f"Cold response: {cold['total_ms']} ms (load {cold['load_ms']} ms, eval {cold['eval_ms']} ms)")
+    info(f"Warm response: {warm['total_ms']} ms (load {warm['load_ms']} ms, eval {warm['eval_ms']} ms)")
+    improvement = round(cold["total_ms"] - warm["total_ms"], 1)
+    info(f"Warmup gain: {improvement} ms")
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="main.py",
@@ -498,6 +540,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("hud", help="Run HUD in the foreground")
     sub.add_parser("cli", help="Terminal assistant")
     sub.add_parser("status", help="Show install / HUD status")
+    sub.add_parser("benchmark", help="Measure cold vs warm response latency")
     return p
 
 
@@ -513,6 +556,7 @@ def main() -> None:
         "hud": cmd_hud,
         "cli": cmd_cli,
         "status": cmd_status,
+        "benchmark": cmd_benchmark,
     }
     commands[args.command](args)
 

@@ -37,7 +37,7 @@ except ImportError as e:
 from config import FULL_CONTROL, LLM_MODEL, PROFILE, VISION_MODEL, WHISPER_MODEL
 from models import warm_models
 from audio import (
-    pick_voice, preload_whisper_background, get_whisper_model,
+    pick_voice, preload_whisper_background, warm_audio_pipeline_background, get_whisper_model,
     record_until_silence, transcribe, speak, abort_listen, wake_match,
 )
 import numpy as np
@@ -85,6 +85,10 @@ STATE = {
     "vision_on": False,
     "vision_status": "off",
     "vision_available": bool(VISION_AVAILABLE),
+    "perf": {
+        "last_first_token_ms": None,
+        "last_total_response_ms": None,
+    },
 }
 
 
@@ -369,13 +373,27 @@ def _run_chat(text: str):
         # Live token stream into the HUD feed
         push("reply_start", status="thinking", hint=hint)
 
+        started_at = time.perf_counter()
+        first_token_at = {"value": None}
+
         def _on_token(delta: str):
+            if first_token_at["value"] is None:
+                first_token_at["value"] = time.perf_counter()
+                first_ms = round((first_token_at["value"] - started_at) * 1000, 1)
+                STATE["perf"]["last_first_token_ms"] = first_ms
             push("token", token=delta, status="thinking")
 
         reply = agent.chat(text, on_token=_on_token)
+        total_ms = round((time.perf_counter() - started_at) * 1000, 1)
+        STATE["perf"]["last_total_response_ms"] = total_ms
 
         ui_mod.print_tool_step = _orig_print_tool
-        push("reply", reply=reply, status="speaking")
+        push(
+            "reply",
+            reply=reply,
+            status="speaking",
+            perf=STATE["perf"],
+        )
         speak(reply, voice, wait=True)
         push("status", status="idle")
     except Exception as e:
@@ -536,6 +554,7 @@ async def on_startup():
         logger.error("Ollama not available")
     threading.Thread(target=lambda: warm_models(PROFILE), daemon=True).start()
     preload_whisper_background()
+    warm_audio_pipeline_background()
     threading.Thread(target=_telemetry_loop, daemon=True).start()
     tel = {}
     try:
