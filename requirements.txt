@@ -1,0 +1,24 @@
+# Core runtime
+ollama>=0.4.0
+openai-whisper>=20231117
+sounddevice>=0.5.0
+soundfile>=0.12.1
+numpy>=1.26.0
+duckduckgo-search>=6.0.0
+pyautogui>=0.9.54
+pillow>=10.0.0
+playwright>=1.40.0
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+websockets>=12.0
+edge-tts>=6.1.0
+
+# Hands + eyes (camera control)
+mediapipe>=0.10.30
+opencv-python>=4.8.0
+
+# Optional: Apple Silicon LoRA fine-tuning
+# mlx-lm>=0.21.0
+
+# Dev
+pytest>=8.0.0

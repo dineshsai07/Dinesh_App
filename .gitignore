@@ -1,0 +1,53 @@
+# D.I.N.E.S.H — local secrets, caches, and OS junk
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
+# Local memory & training artefacts (personal — do not publish)
+jarvis/memory/jarvis_memory.db
+jarvis/memory/*.db
+jarvis/memory/dataset.jsonl
+jarvis/memory/adapters/
+jarvis/memory/exports/
+jarvis/memory/training/lora_adapters/
+jarvis/screenshots/
+*.db-journal
+
+# Large MediaPipe model binaries (fetched by install.sh)
+jarvis/vision_models/*.task
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# Logs & temp
+*.log
+/tmp/
+hud_screens/
+jarvis/hud/screens/

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D.I.N.E.S.H</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css?v=vision-2" />
+</head>
+<body data-status="boot">
+  <canvas id="space" aria-hidden="true"></canvas>
+  <div class="hexgrid" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <div class="frame" aria-hidden="true">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+  </div>
+
+  <div class="shell">
+    <div id="link-alert" class="link-alert" role="alert" aria-live="assertive">
+      <div>
+        <strong>BACKEND OFFLINE</strong>
+        <span>Wake, Eyes, voice, and live telemetry are unavailable.</span>
+      </div>
+      <code>cd /Users/dineshsai/jarvis_app/jarvis &amp;&amp; ./run_hud.sh</code>
+      <button id="retry-link" type="button">Retry link</button>
+    </div>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">
+        <p class="eyebrow">Local Node · On-Device</p>
+        <h1>D.I.N.E.S.H</h1>
+        <p class="tag">Device-Integrated Neural Engine for System Handling</p>
+      </div>
+      <div class="clock-block">
+        <p class="clock" id="clock-time">--:--:--</p>
+        <p class="date" id="clock-date">—</p>
+      </div>
+      <div class="meta">
+        <span class="chip" id="chip-model">MODEL —</span>
+        <span class="chip" id="chip-voice">VOICE —</span>
+        <span class="chip live" id="chip-link">LINK …</span>
+      </div>
+    </header>
+
+    <!-- MAIN HUD GRID -->
+    <main class="hud-grid">
+      <!-- LEFT: systems -->
+      <aside class="panel left">
+        <div class="panel-head"><span>Systems</span><i></i></div>
+
+        <div class="gauge-ring-row">
+          <div class="ring" id="ring-cpu">
+            <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" class="track"/><circle cx="40" cy="40" r="30" class="val" pathLength="100"/></svg>
+            <em id="cpu-pct">0%</em>
+            <span>CPU</span>
+          </div>
+          <div class="ring" id="ring-ram">
+            <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" class="track"/><circle cx="40" cy="40" r="30" class="val" pathLength="100"/></svg>
+            <em id="ram-pct">0%</em>
+            <span>RAM</span>
+          </div>
+        </div>
+
+        <div class="meter">
+          <div class="meter-label"><span>Storage</span><b id="disk-label">—</b></div>
+          <div class="meter-bar"><i id="disk-bar" style="width:0%"></i></div>
+        </div>
+        <div class="meter">
+          <div class="meter-label"><span>Load avg</span><b id="load-label">—</b></div>
+          <div class="meter-bar"><i id="load-bar" style="width:0%"></i></div>
+        </div>
+
+        <ul class="kv" id="kv">
+          <li><span>Hardware</span><b id="k-hw">—</b></li>
+          <li><span>Vision</span><b id="k-vision">—</b></li>
+          <li><span>Whisper</span><b id="k-whisper">—</b></li>
+          <li><span>Authority</span><b id="k-mode">SAFE</b></li>
+          <li><span>Uptime</span><b id="k-uptime">—</b></li>
+          <li><span>Power</span><b id="k-power">100%</b></li>
+        </ul>
+
+        <div class="wave" id="wave" aria-hidden="true"></div>
+      </aside>
+
+      <!-- CENTER: core -->
+      <section class="core-stage">
+        <div class="core-wrap">
+          <div class="reticle" aria-hidden="true"></div>
+          <canvas id="reactor" width="640" height="640"></canvas>
+          <button id="orb-btn" class="orb-hit" type="button" title="Activate voice" aria-label="Speak"></button>
+        </div>
+        <div class="core-caption">
+          <p class="state" id="status-label">INITIALIZING</p>
+          <p class="hint" id="status-hint">Bringing the neural engine online…</p>
+          <p class="power-line" id="power-line">Neural core holding steady</p>
+        </div>
+      </section>
+
+      <!-- RIGHT: activity + feed -->
+      <aside class="panel right">
+        <div class="panel-head"><span>Activity</span><i></i></div>
+        <ul class="ops" id="ops">
+          <li class="empty">Waiting for a directive</li>
+        </ul>
+
+        <div class="panel-head sub"><span>Conversation</span><i></i></div>
+        <div class="feed" id="feed"></div>
+      </aside>
+    </main>
+
+    <!-- BOTTOM COMMAND -->
+    <footer class="dock">
+      <div class="ticker" id="ticker">
+        <div class="ticker-track" id="ticker-track">
+          UPLINK NOMINAL · NEURAL CORE ONLINE · VOICE PIPELINE ARMED · TOOL SURFACE READY ·
+        </div>
+      </div>
+      <form class="composer" id="composer">
+        <button type="button" id="mic-btn" class="btn ghost pulse-able">Speak</button>
+        <button type="button" id="wake-btn" class="btn ghost" title="Always listen for Hey Dinesh">Wake</button>
+        <button type="button" id="vision-btn" class="btn ghost" title="Hands + eyes control">Eyes</button>
+        <input id="text-input" type="text" autocomplete="off" maxlength="500"
+          placeholder="Directive — type here, or press Space to speak" />
+        <button type="submit" class="btn solid">Send</button>
+      </form>
+      <p class="keys">Space speak · Esc cancel · Wake = “Hey Dinesh” · Eyes = gestures + gaze</p>
+    </footer>
+  </div>
+
+  <!-- compat for older app.js gauge hooks -->
+  <div id="g-cpu" hidden><span class="val"></span></div>
+  <div id="g-net" hidden><span class="val"></span></div>
+
+  <div id="boot-overlay" class="boot">
+    <div class="boot-inner">
+      <p class="boot-brand">D.I.N.E.S.H</p>
+      <p class="boot-sub">Establishing secure local channel</p>
+      <div class="boot-bar"><span></span></div>
+      <ul class="perm-list" id="perm-list"></ul>
+    </div>
+  </div>
+
+  <div id="vision-preview" class="vision-preview" hidden>
+    <img id="vision-img" alt="Vision preview" />
+    <p id="vision-label">watching</p>
+  </div>
+
+  <script src="/static/space.js?v=vision-2"></script>
+  <script src="/static/reactor.js?v=vision-2"></script>
+  <script src="/static/app.js?v=vision-2"></script>
+</body>
+</html>

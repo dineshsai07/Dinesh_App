@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D.I.N.E.S.H</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body data-status="boot">
+  <canvas id="space" aria-hidden="true"></canvas>
+  <div class="hexgrid" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+
+  <div class="frame">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+  </div>
+
+  <header class="hud-top">
+    <div class="brand-block">
+      <p class="eyebrow">Local Node · On-Device</p>
+      <h1>D.I.N.E.S.H</h1>
+      <p class="tag">Device-Integrated Neural Engine for System Handling</p>
+    </div>
+    <div class="ticker" id="ticker">
+      <div class="ticker-track" id="ticker-track">
+        UPLINK NOMINAL · NEURAL CORE ONLINE · VOICE PIPELINE ARMED · TOOL SURFACE READY ·
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip" id="chip-model">MODEL —</span>
+      <span class="chip" id="chip-voice">VOICE —</span>
+      <span class="chip live" id="chip-link">LINK …</span>
+    </div>
+  </header>
+
+  <main class="hud-main">
+    <section class="panel left glass">
+      <div class="panel-head">
+        <span>SENSORS</span>
+        <i></i>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge" id="g-cpu"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30"/><circle class="val" cx="40" cy="40" r="30"/></svg><em>CORE</em></div>
+        <div class="gauge" id="g-net"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30"/><circle class="val" cx="40" cy="40" r="30"/></svg><em>LINK</em></div>
+      </div>
+      <ul class="kv" id="kv">
+        <li><span>Hardware</span><b id="k-hw">—</b></li>
+        <li><span>Vision</span><b id="k-vision">—</b></li>
+        <li><span>Whisper</span><b id="k-whisper">—</b></li>
+        <li><span>Authority</span><b id="k-mode">SAFE</b></li>
+      </ul>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+    </section>
+
+    <section class="core-stage">
+      <div class="reticle" aria-hidden="true"></div>
+      <canvas id="reactor" width="640" height="640"></canvas>
+      <button id="orb-btn" class="orb-hit" type="button" title="Activate voice"></button>
+      <div class="core-caption">
+        <p class="state" id="status-label">INITIALIZING</p>
+        <p class="hint" id="status-hint">Calibrating holographic interface…</p>
+      </div>
+    </section>
+
+    <section class="panel right glass">
+      <div class="panel-head">
+        <span>OPERATIONS</span>
+        <i></i>
+      </div>
+      <ul class="ops" id="ops">
+        <li class="empty">No active directives</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="hud-bottom glass">
+    <div class="feed" id="feed"></div>
+    <form class="bar" id="composer">
+      <button type="button" id="mic-btn" class="icon-btn pulse-able">◉ SPEAK</button>
+      <input id="text-input" type="text" autocomplete="off" maxlength="500"
+        placeholder="Issue a directive — or press Space" />
+      <button type="submit" class="icon-btn primary">EXECUTE →</button>
+    </form>
+  </footer>
+
+  <div id="boot-overlay" class="boot">
+    <div class="boot-inner">
+      <p>ESTABLISHING SECURE CHANNEL</p>
+      <div class="boot-bar"><span></span></div>
+    </div>
+  </div>
+
+  <script src="/static/space.js"></script>
+  <script src="/static/reactor.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
