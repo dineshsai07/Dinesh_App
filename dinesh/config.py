@@ -5,9 +5,22 @@ from pathlib import Path
 
 from models import ModelProfile, detect_profile
 
+
+def _env(name: str, default: str = "") -> str:
+    """Prefer DINESH_* env vars; accept legacy JARVIS_* for one release."""
+    dinesh_key = f"DINESH_{name}"
+    jarvis_key = f"JARVIS_{name}"
+    if dinesh_key in os.environ:
+        return os.environ[dinesh_key]
+    if jarvis_key in os.environ:
+        return os.environ[jarvis_key]
+    return default
+
+
 # ── Paths ──────────────────────────────────────────────────────
-JARVIS_DIR = Path(__file__).resolve().parent
-SCREENSHOT_DIR = JARVIS_DIR / "screenshots"
+APP_DIR = Path(__file__).resolve().parent
+DINESH_DIR = APP_DIR  # alias
+SCREENSHOT_DIR = APP_DIR / "screenshots"
 PROFILE: ModelProfile = detect_profile()
 
 
@@ -24,9 +37,9 @@ RAM_GB = PROFILE.ram_gb
 PERFORMANCE_TIER = PROFILE.tier
 
 # ── Agent ──────────────────────────────────────────────────────
-MAX_AGENT_STEPS = int(os.environ.get("JARVIS_MAX_STEPS", "20"))
-SHELL_TIMEOUT = int(os.environ.get("JARVIS_SHELL_TIMEOUT", "90"))
-MAX_HISTORY = int(os.environ.get("JARVIS_MAX_HISTORY", "24"))
+MAX_AGENT_STEPS = int(_env("MAX_STEPS", "20"))
+SHELL_TIMEOUT = int(_env("SHELL_TIMEOUT", "90"))
+MAX_HISTORY = int(_env("MAX_HISTORY", "24"))
 OLLAMA_OPTIONS = {
     "temperature": 0.55,
     "num_predict": 220,
@@ -34,7 +47,7 @@ OLLAMA_OPTIONS = {
     "top_p": 0.9,
 }
 
-FULL_CONTROL = os.environ.get("JARVIS_FULL_CONTROL", "0") == "1"
+FULL_CONTROL = _env("FULL_CONTROL", "0") == "1"
 
 # ── Audio ──────────────────────────────────────────────────────
 SAMPLE_RATE = 16000
@@ -46,8 +59,8 @@ PREFERRED_VOICES = ["Daniel", "Oliver", "Alex"]
 SPEECH_RATE = 190
 
 # Neural British TTS (edge-tts)
-TTS_VOICE = os.environ.get("JARVIS_TTS_VOICE", "en-GB-RyanNeural")
-TTS_RATE = os.environ.get("JARVIS_TTS_RATE", "+8%")
+TTS_VOICE = _env("TTS_VOICE", "en-GB-RyanNeural")
+TTS_RATE = _env("TTS_RATE", "+8%")
 
 # ── GUI / Vision ───────────────────────────────────────────────
 PYAUTOGUI_PAUSE = 0.08
@@ -102,5 +115,3 @@ TOOLS:
 - Use the tool interface only — never print tool calls as text.
 - Prefer run_python for files/folders/HTML (Path, HOME, DESKTOP available).
 - Observe → act → verify."""
-
-

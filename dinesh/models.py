@@ -94,13 +94,31 @@ def _pick(candidates: list[str], installed: set[str]) -> str | None:
     return None
 
 
+def _env_first(*keys: str) -> str | None:
+    for key in keys:
+        if key in os.environ and os.environ[key]:
+            return os.environ[key]
+    return None
+
+
 def detect_profile() -> ModelProfile:
     ram = _ram_gb()
     installed = _installed_models()
 
-    llm = os.environ.get("JARVIS_MODEL") or _pick(LLM_PRIORITY, installed) or RECOMMENDED_LLM
-    vision = os.environ.get("JARVIS_VISION_MODEL") or _pick(VISION_PRIORITY, installed) or "moondream"
-    whisper = os.environ.get("JARVIS_WHISPER") or WHISPER_BY_RAM.get(ram, "base")
+    llm = (
+        _env_first("DINESH_MODEL", "JARVIS_MODEL")
+        or _pick(LLM_PRIORITY, installed)
+        or RECOMMENDED_LLM
+    )
+    vision = (
+        _env_first("DINESH_VISION_MODEL", "JARVIS_VISION_MODEL")
+        or _pick(VISION_PRIORITY, installed)
+        or "moondream"
+    )
+    whisper = (
+        _env_first("DINESH_WHISPER", "JARVIS_WHISPER")
+        or WHISPER_BY_RAM.get(ram, "base")
+    )
 
     if ram <= 16:
         tier = "lite"

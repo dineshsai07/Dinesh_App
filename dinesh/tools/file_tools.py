@@ -102,7 +102,7 @@ def copy_file(source: str, destination: str) -> str:
 
 def delete_path(path: str) -> str:
     if not FULL_CONTROL:
-        return "Delete blocked. Set JARVIS_FULL_CONTROL=1 to enable destructive file operations."
+        return "Delete blocked. Set DINESH_FULL_CONTROL=1 to enable destructive file operations."
     full = os.path.expanduser(path)
     try:
         if os.path.isdir(full):

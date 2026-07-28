@@ -20,7 +20,7 @@ from memory.store import TRAIN_DIR, export_training_jsonl, memory_block, stats
 
 def _base_model() -> str:
     """Always bake from the stock base — never FROM a learned model (avoids nesting)."""
-    return os.environ.get("JARVIS_BASE_MODEL") or RECOMMENDED_LLM
+    return os.environ.get("DINESH_BASE_MODEL") or os.environ.get("JARVIS_BASE_MODEL") or RECOMMENDED_LLM
 
 
 def rebuild_ollama_learned_model() -> str:

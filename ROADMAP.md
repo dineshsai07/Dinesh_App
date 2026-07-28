@@ -12,11 +12,14 @@
 - [x] Eyes mode — MediaPipe hands + face (wave/fist/pinch/blink/gaze)
 - [x] Streaming LLM tokens into HUD
 - [x] First-run permissions report (mic/camera/accessibility/screen)
+- [x] Portable installer (`main.py`) — no hardcoded user paths; works on any Mac
 
 ## P1 — polish that demo viewers notice in under 30 seconds
 - [ ] Confirm spoken wake with a soft chime + reactor pulse
 - [ ] Calibrate gesture sensitivity per user
-- [ ] Optional always-on Eyes at boot (JARVIS_EYES=1)
+- [ ] Optional always-on Eyes at boot (`DINESH_EYES=1`)
+- [ ] Don't block new commands while TTS is speaking
+- [ ] Keep LLM warm to avoid ~12s cold-start
 
 ## P2 — intelligence leaps
 - [ ] Multi-step plan preview before risky shell/GUI actions
@@ -28,7 +31,7 @@
 - [ ] Plugin directory: drop a Python file → new tool
 - [ ] GitHub Actions: run pytest on PRs
 - [ ] Demo GIF / short video in README
-- [ ] Optional cloud LLM fallback behind JARVIS_CLOUD=1 with a big local-only banner
+- [ ] Optional cloud LLM fallback behind `DINESH_CLOUD=1` with a big local-only banner
 
 ## What NOT to add yet
 - More models for the sake of it — qwen2.5:7b + dinesh-learned is enough

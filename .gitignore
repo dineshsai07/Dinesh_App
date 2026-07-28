@@ -25,18 +25,41 @@ build/
 .coverage
 htmlcov/
 
-# Local memory & training artefacts (personal — do not publish)
-jarvis/memory/jarvis_memory.db
-jarvis/memory/*.db
-jarvis/memory/dataset.jsonl
-jarvis/memory/adapters/
-jarvis/memory/exports/
-jarvis/memory/training/lora_adapters/
-jarvis/screenshots/
-*.db-journal
+# ── Personal / runtime data (NEVER publish) ───────────────────
+# Memory databases (any name / location under the app package)
+**/memory/*.db
+**/memory/*.db-shm
+**/memory/*.db-wal
+**/memory/*.db-journal
+*.db
+*.db-shm
+*.db-wal
 
-# Large MediaPipe model binaries (fetched by install.sh)
-jarvis/vision_models/*.task
+# Training exports, Modelfiles with host paths, LoRA weights
+**/memory/dataset.jsonl
+**/memory/adapters/
+**/memory/exports/
+**/memory/training/
+**/memory/training/**
+
+# Screenshots & HUD capture dumps
+**/screenshots/
+**/hud/screens/
+hud_screens/
+*.png
+*.jpg
+*.jpeg
+*.webp
+!docs/**/*.png
+
+# MediaPipe model binaries (downloaded by main.py setup)
+**/vision_models/*.task
+
+# Logs
+*.log
+/tmp/
+
+# Legacy nested trees (none expected in clean checkouts)
 
 # Editor / OS
 .DS_Store
@@ -45,9 +68,3 @@ jarvis/vision_models/*.task
 *.swp
 *.swo
 .cursor/
-
-# Logs & temp
-*.log
-/tmp/
-hud_screens/
-jarvis/hud/screens/

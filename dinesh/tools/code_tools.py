@@ -28,7 +28,7 @@ def run_python(code: str) -> str:
     if not FULL_CONTROL:
         for b in _SOFT_BLOCK:
             if b in low:
-                return f"Blocked destructive call '{b}'. Set JARVIS_FULL_CONTROL=1 to allow."
+                return f"Blocked destructive call '{b}'. Set DINESH_FULL_CONTROL=1 to allow."
 
     namespace = {
         "__builtins__": {

@@ -8,10 +8,23 @@ import time
 from pathlib import Path
 from typing import Any
 
-from config import JARVIS_DIR
+from config import APP_DIR
 
-DB_PATH = JARVIS_DIR / "memory" / "jarvis_memory.db"
-TRAIN_DIR = JARVIS_DIR / "memory" / "training"
+DB_PATH = APP_DIR / "memory" / "dinesh_memory.db"
+TRAIN_DIR = APP_DIR / "memory" / "training"
+
+# Migrate legacy DB name if present
+_LEGACY_DB = APP_DIR / "memory" / "jarvis_memory.db"
+if not DB_PATH.exists() and _LEGACY_DB.exists():
+    try:
+        _LEGACY_DB.rename(DB_PATH)
+        for suffix in ("-wal", "-shm"):
+            old = Path(str(_LEGACY_DB) + suffix)
+            new = Path(str(DB_PATH) + suffix)
+            if old.exists() and not new.exists():
+                old.rename(new)
+    except OSError:
+        pass
 
 
 def _conn() -> sqlite3.Connection:

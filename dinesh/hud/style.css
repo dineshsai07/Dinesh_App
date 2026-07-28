@@ -150,7 +150,7 @@ html, body {
 /* ── TOP ── */
 .topbar {
   display: grid;
-  grid-template-columns: 1.3fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: end;
   gap: 1rem;
   min-height: 0;
@@ -158,6 +158,13 @@ html, body {
   min-width: 0;
 }
 .brand, .clock-block, .meta { min-width: 0; }
+.brand { justify-self: start; text-align: left; }
+.clock-block {
+  justify-self: center;
+  text-align: center;
+  grid-column: 2;
+}
+.meta { justify-self: end; }
 
 .eyebrow {
   font-family: var(--font-m);

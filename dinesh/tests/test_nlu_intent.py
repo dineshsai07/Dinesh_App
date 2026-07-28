@@ -1,7 +1,7 @@
 """
 Regression tests for typo tolerance and intent routing.
 
-Run with:  python3 -m pytest tests/ -q      (from the jarvis/ directory)
+Run with:  python3 -m pytest tests/ -q      (from the dinesh/ directory)
 """
 
 import sys

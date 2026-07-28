@@ -26,7 +26,7 @@ try:
     import pyautogui  # noqa: F401
 except ImportError as e:
     print(f"\n  ✗  Missing dependency: {e}")
-    print("     Run:  cd jarvis && bash install.sh\n")
+    print("     Run:  python3 main.py setup\n")
     sys.exit(1)
 
 from config import FULL_CONTROL, LLM_MODEL, PROFILE, VISION_MODEL, WHISPER_MODEL
